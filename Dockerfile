@@ -1,6 +1,7 @@
 FROM openjdk:8-jdk
 
-RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+#jenkins and arcanist 
+RUN apt-get update && apt-get install -y git curl php php-curl rsync vim&& rm -rf /var/lib/apt/lists/*
 
 ARG user=jenkins
 ARG group=jenkins
@@ -74,8 +75,6 @@ COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
 
 # install arcanist
-RUN apt-get install php php-curl rsync vim
-
 WORKDIR /var/jenkins_home
 
 RUN git clone git://github.com/facebook/libphutil.git
