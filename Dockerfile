@@ -72,3 +72,13 @@ ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
 # from a derived Dockerfile, can use `RUN plugins.sh active.txt` to setup /usr/share/jenkins/ref/plugins from a support bundle
 COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
+
+# install arcanist
+RUN apt-get install php php-curl rsync vim
+
+WORKDIR /var/jenkins_home
+
+RUN git clone git://github.com/facebook/libphutil.git
+RUN git clone git://github.com/facebook/arcanist.git
+
+ENV PATH /var/jenkins_home/arcanist/bin:$PATH
