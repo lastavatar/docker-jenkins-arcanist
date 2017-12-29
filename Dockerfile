@@ -1,7 +1,12 @@
 FROM openjdk:8-jdk
 
-#jenkins and arcanist 
 RUN apt-get update && apt-get install -y git curl php php-curl rsync vim&& rm -rf /var/lib/apt/lists/*
+
+# Phabricator cli tools
+RUN mkdir -p /usr/local/share/phabricator && \
+    git clone -b master https://github.com/phacility/libphutil.git /usr/local/share/phabricator/libphutil && \
+    git clone -b master https://github.com/phacility/arcanist.git /usr/local/share/phabricator/arcanist && \
+    ln -fsn /usr/local/share/phabricator/arcanist/bin/arc /usr/local/bin/arc
 
 ARG user=jenkins
 ARG group=jenkins
@@ -73,11 +78,3 @@ ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
 # from a derived Dockerfile, can use `RUN plugins.sh active.txt` to setup /usr/share/jenkins/ref/plugins from a support bundle
 COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
-
-# install arcanist
-WORKDIR /var/jenkins_home
-
-RUN git clone git://github.com/facebook/libphutil.git
-RUN git clone git://github.com/facebook/arcanist.git
-
-ENV PATH /var/jenkins_home/arcanist/bin:$PATH
